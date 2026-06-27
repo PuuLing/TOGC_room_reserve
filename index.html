@@ -1027,9 +1027,11 @@ async function checkQuota() {
 
 function updateQuotaDisplay(group) {
   if (!group) return;
+  const bookingDate = document.getElementById('bookDate').value;
   const now = new Date();
-  const y = now.getFullYear(), m = now.getMonth() + 1;
-  const monthPrefix = `${y}-${String(m).padStart(2,'0')}`;
+  const monthPrefix = bookingDate
+    ? bookingDate.slice(0, 7)
+    : `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
   const isSpecial = SPECIAL_GROUPS.includes(group);
   const allowedHours = getBookingHours(group);
   const used = bookingsCache
@@ -1233,9 +1235,17 @@ function switchTab(name) {
     updateQuotaDisplay(group);
     applyAutoEndTime(); // 切換小組時重新計算結束時間
   });
-  document.getElementById('bookDate').addEventListener('change', e => {
+  document.getElementById('bookDate').addEventListener('change', async e => {
     selectedDate = e.target.value;
     renderCalendar();
+    if (e.target.value) {
+      const [y, m] = e.target.value.split('-').map(Number);
+      if (!cacheMonth || cacheMonth.year !== y || cacheMonth.month !== m) {
+        await loadMonthBookings(y, m);
+      }
+      const group = document.getElementById('groupName').value;
+      if (group) updateQuotaDisplay(group);
+    }
   });
 
   // 初始化結束時間欄位狀態
