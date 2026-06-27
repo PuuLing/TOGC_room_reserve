@@ -10,7 +10,7 @@ const NOTION_API = 'https://api.notion.com/v1';
 const NOTION_VERSION = '2022-06-28';
 
 const ALLOWED_ORIGINS = [
-  'https://TOGC_room_reserve.github.io',  // ← 改成你的 GitHub Pages 網址
+  'https://puuling.github.io',  // GitHub Pages origin
   'http://localhost',
   'http://127.0.0.1',
   'null',  // for file:// local testing
